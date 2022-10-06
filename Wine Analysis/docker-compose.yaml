@@ -1,0 +1,66 @@
+version: '3'
+
+services:
+
+  traefik:
+    image: "traefik:v2.6"
+    container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.localhost`)"
+      - "traefik.http.routers.traefik.entrypoints=web"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+
+  # portainer:
+  #   image: portainer/portainer-ce:latest
+  #   container_name: portainer
+  #   restart: unless-stopped
+  #   security_opt:
+  #     - no-new-privileges:true
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #     - ./portainer:/data
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.portainer.rule=Host(`portainer.localhost`)"
+  #     - "traefik.http.routers.portainer.entrypoints=web"
+  #     - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+
+version: "3.9"
+
+services:
+  sanika-notebook:
+    container_name: sanika-notebook
+    build: .
+    environment:
+      JUPYTER_TOKEN: ${JUPYTER_TOKEN}
+    volumes:
+      - .:/home/jovyan
+    ports:
+      - 8888:8888
+    restart: on-failure
+     
+  # pyspark-notebook:
+  #   image: jupyter/pyspark-notebook
+  #   container_name: jupyter-pyspark
+  #   environment:
+  #     JUPYTER_TOKEN: ${JUPYTER_TOKEN}
+  #   volumes:
+  #     - ../workspace:/home/jovyan
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.pyspark.rule=Host(`pyspark.localhost`)"
+  #     - "traefik.http.routers.pyspark.entrypoints=web"
+  #     - "traefik.http.services.pyspark.loadbalancer.server.port=8888"
+

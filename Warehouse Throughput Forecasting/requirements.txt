@@ -1,0 +1,10 @@
+sklearn
+pandas
+matplotlib
+prophet
+plotly
+plotly_express
+statsmodels
+numpy
+jupyter_black
+pycaret

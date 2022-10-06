@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  team2-timeseries-notebook:
+    container_name: team2-notebook
+    build: .
+    environment:
+      JUPYTER_TOKEN: ${JUPYTER_TOKEN}
+    volumes:
+      - .:/home/jovyan
+    ports:
+      - 8888:8888
+    restart: on-failure
